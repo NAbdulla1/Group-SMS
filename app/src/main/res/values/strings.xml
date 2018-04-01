@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Group SMS</string>
+    <string name="db_insert_error_msg">Phone number <i>already exists</i> or an <b>error</b> occurred</string>
+    <string name="add">ADD</string>
 </resources>
