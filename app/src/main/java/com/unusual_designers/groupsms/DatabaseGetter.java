@@ -10,15 +10,18 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseGetter {
     private static SQLiteOpenHelper db;
-    private static void getInstance(Context context){
-        if(db == null)
+
+    private static void getInstance(Context context) {
+        if (db == null)
             db = new GroupDatabaseHelper(context);
     }
-    public static SQLiteDatabase getReadableDatabase(Context context){
+
+    public static SQLiteDatabase getReadableDatabase(Context context) {
         getInstance(context);
         return db.getReadableDatabase();
     }
-    public static SQLiteDatabase getWritableDatabase(Context context){
+
+    public static SQLiteDatabase getWritableDatabase(Context context) {
         getInstance(context);
         return db.getWritableDatabase();
     }

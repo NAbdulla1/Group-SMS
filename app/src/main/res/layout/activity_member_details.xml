@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    tools:context=".MemberDetailsActivity">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.3" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="ID:"
+        app:layout_constraintBaseline_toBaselineOf="@id/id"
+        app:layout_constraintEnd_toStartOf="@id/guideline3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Name:"
+        app:layout_constraintBaseline_toBaselineOf="@id/name"
+        app:layout_constraintEnd_toStartOf="@id/guideline3"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Phone:"
+        app:layout_constraintBaseline_toBaselineOf="@id/phone"
+        app:layout_constraintEnd_toStartOf="@id/guideline3"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/id"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline3"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline3"
+        app:layout_constraintTop_toBottomOf="@id/id" />
+
+    <EditText
+        android:id="@+id/phone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline3"
+        app:layout_constraintTop_toBottomOf="@id/name" />
+
+    <Button
+        android:id="@+id/add_member_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="DONE"
+        app:layout_constraintEnd_toEndOf="@id/add_from_phonebook_button"
+        app:layout_constraintStart_toStartOf="@id/add_from_phonebook_button"
+        app:layout_constraintTop_toBottomOf="@id/phone" />
+
+    <TextView
+        android:id="@+id/or"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OR"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/add_member_button" />
+
+    <Button
+        android:id="@+id/add_from_phonebook_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add from phonebook"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/or" />
+</android.support.constraint.ConstraintLayout>

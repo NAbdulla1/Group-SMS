@@ -12,10 +12,14 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".ContactsLoadActivity" />
+        <activity android:name=".GroupListActivity" />
+        <activity android:name=".MemberListActivity" />
+        <activity android:name=".MemberDetailsActivity"/>
     </application>
-
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 </manifest>

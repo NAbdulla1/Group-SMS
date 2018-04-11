@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.function.BiConsumer;
 
 public class ContactsLoadActivity extends AppCompatActivity {
 
@@ -53,23 +51,23 @@ public class ContactsLoadActivity extends AppCompatActivity {
                 new String[]{"01%", "%8801", "+8801%"},
                 ContactsContract.Data.DISPLAY_NAME);
 
-        if(c != null) {
+        if (c != null) {
             int cnt = c.getCount();
             map = new TreeMap<>();
             checked = new boolean[cnt];
             //Log.d("cursorVals", "results: " + cnt);
             listView.setAdapter(new MyCursorAdapter(this, c));
-        }
-        else
+        } else
             Toast.makeText(this, "Can't load contacts properly. Try Again.", Toast.LENGTH_SHORT).show();
 
-        addBtn.setOnClickListener(v->addToGroup(groupName));
-        cancelBtn.setOnClickListener(v->finish());
+        addBtn.setOnClickListener(v -> addToGroup(groupName));
+        cancelBtn.setOnClickListener(v -> finish());
     }
 
     @Override
     protected void onDestroy() {
-        c.close();
+        if (c != null)
+            c.close();
         super.onDestroy();
     }
 
@@ -101,50 +99,49 @@ public class ContactsLoadActivity extends AppCompatActivity {
             cb.setOnClickListener(v -> {
                 String nameStr = name.getText().toString();
                 String phoneStr = makeSimple(phone.getText().toString());
-                CheckBox isTakenBox = (CheckBox)v;
-                if(isTakenBox.isChecked()){
-                    if(map.containsKey(phoneStr)){
+                CheckBox isTakenBox = (CheckBox) v;
+                if (isTakenBox.isChecked()) {
+                    if (map.containsKey(phoneStr)) {
                         Toast.makeText(ContactsLoadActivity.this,
                                 "Phone Number already exists in list",
                                 Toast.LENGTH_SHORT).show();
                         isTakenBox.setChecked(false);
                         return;
                     }
-                    checked[(Integer)v.getTag()] = true;
+                    checked[(Integer) v.getTag()] = true;
                     map.put(phoneStr, nameStr);
-                    Toast.makeText(ContactsLoadActivity.this,
+/*                    Toast.makeText(ContactsLoadActivity.this,
                             "Contact added to list.\nList size: " + map.size(),
-                            Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    checked[(Integer)v.getTag()] = false;
+                            Toast.LENGTH_SHORT).show();*/
+                } else {
+                    checked[(Integer) v.getTag()] = false;
                     map.remove(phoneStr);
-                    Toast.makeText(ContactsLoadActivity.this,
+/*                    Toast.makeText(ContactsLoadActivity.this,
                             "Contact removed from list.\nList size: " + map.size(),
-                            Toast.LENGTH_SHORT).show();
+                            Toast.LENGTH_SHORT).show();*/
                 }
             });
         }
     }
 
-    private void addToGroup(String groupName){
+    private void addToGroup(String groupName) {
         ContentValues cv = new ContentValues();
         Set<String> keys = map.keySet();
         SQLiteDatabase db = DatabaseGetter.getWritableDatabase(this);
-        for(String key:keys){
+        for (String key : keys) {
             cv.put(GroupDatabaseHelper.MEMBER_NAME, map.get(key));
             cv.put(GroupDatabaseHelper.MEMBER_PHONE, key);
-            if(db.insert(groupName, GroupDatabaseHelper.MEMBER_NAME, cv) == -1){
+            if (db.insert(groupName, GroupDatabaseHelper.MEMBER_NAME, cv) == -1) {
                 Toast.makeText(this, R.string.db_insert_error_msg, Toast.LENGTH_SHORT).show();
             }
         }
         finish();
     }
 
-    private String makeSimple(String phoneNumber){
-        if(phoneNumber.startsWith("+88"))
+    private String makeSimple(String phoneNumber) {
+        if (phoneNumber.startsWith("+88"))
             return phoneNumber.substring(3);
-        else if(phoneNumber.startsWith("88"))
+        else if (phoneNumber.startsWith("88"))
             return phoneNumber.substring(2);
         else
             return phoneNumber;
