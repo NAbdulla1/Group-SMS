@@ -57,8 +57,10 @@ public class ContactsLoadActivity extends AppCompatActivity {
             checked = new boolean[cnt];
             //Log.d("cursorVals", "results: " + cnt);
             listView.setAdapter(new MyCursorAdapter(this, c));
-        } else
+        } else {
             Toast.makeText(this, "Can't load contacts properly. Try Again.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         addBtn.setOnClickListener(v -> addToGroup(groupName));
         cancelBtn.setOnClickListener(v -> finish());

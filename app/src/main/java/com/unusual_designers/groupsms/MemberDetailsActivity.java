@@ -1,10 +1,17 @@
 package com.unusual_designers.groupsms;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +27,10 @@ import static com.unusual_designers.groupsms.MemberListActivity.ACTION;
 import static com.unusual_designers.groupsms.MemberListActivity.addRequest;
 import static com.unusual_designers.groupsms.MemberListActivity.editRequest;
 
-public class MemberDetailsActivity extends AppCompatActivity {
+public class MemberDetailsActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
+
+    static final int REQUEST_CODE_FOR_CONTACTS = 44654;//arbitrary number
+    static final String IS_FIRST_REQUEST_PREF = "isfirstrequestfile";
 
     EditText id, name, phone;
     Button done, phonebook;
@@ -109,9 +119,37 @@ public class MemberDetailsActivity extends AppCompatActivity {
         });
 
         phonebook.setOnClickListener(v -> {
-            startActivity(new Intent(this, ContactsLoadActivity.class)
-                    .putExtra(GROUP_NAME, currentGroupName));
-            finish();
+            boolean isFirst = getSharedPreferences(IS_FIRST_REQUEST_PREF, MODE_PRIVATE).getBoolean(IS_FIRST_REQUEST_PREF, true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    getSharedPreferences(IS_FIRST_REQUEST_PREF, MODE_PRIVATE).edit().putBoolean(IS_FIRST_REQUEST_PREF, false).apply();
+                    if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                        dialog.setTitle("Information:");
+                        dialog.setView(R.layout.alert_view);
+                        dialog.setPositiveButton("Allow", (d, w) -> {
+                            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_CODE_FOR_CONTACTS);
+                        });
+                        dialog.setNegativeButton("Not Allow", null);
+                        dialog.show();
+                    } else {
+                        if (isFirst) {
+                            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_CODE_FOR_CONTACTS);
+                        } else {
+                            Toast.makeText(this, "You have denied READ_CONTACTS permission for this application. This functionality will not work.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                } else {
+                    startActivity(new Intent(this, ContactsLoadActivity.class)
+                            .putExtra(GROUP_NAME, currentGroupName));
+                    finish();
+                }
+            } else {
+                startActivity(new Intent(this, ContactsLoadActivity.class)
+                        .putExtra(GROUP_NAME, currentGroupName));
+                finish();
+            }
         });
     }
 
@@ -135,5 +173,22 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 return false;
         }
         return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_FOR_CONTACTS) {
+            for (int i = 0; i < permissions.length; i++) {
+                if (permissions[i].equals(Manifest.permission.READ_CONTACTS)) {
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        startActivity(new Intent(this, ContactsLoadActivity.class)
+                                .putExtra(GROUP_NAME, currentGroupName));
+                        finish();
+                    }
+                    break;
+                }
+            }
+        }
     }
 }
